@@ -1,0 +1,11 @@
+{
+    "load": "./uniform_target.py",
+
+    "workers": 14,
+
+    "iterations": 100,
+
+    "batch": "./uniform_target.batch",
+
+    "seed": 916539032
+}

@@ -1,0 +1,11 @@
+{
+    "load": "./qrf_preopt.py",
+
+    "workers": 40,
+
+    "iterations": 100,
+
+    "batch": "./qrf_preopt.batch",
+
+    "seed": 132023144 
+}

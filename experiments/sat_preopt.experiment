@@ -1,0 +1,11 @@
+{
+    "load": "./sat_preopt.py",
+
+    "workers": 30,
+
+    "iterations": 100,
+
+    "batch": "./sat_preopt.batch",
+
+    "seed": 117435620
+}

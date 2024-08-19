@@ -1,0 +1,7 @@
+{
+    "instances":
+    [
+          {"data": {"phi": 1.2, "n": 8, "nseeds": 3, "pstep": 0.5, "cluster_size": 30, "nsamples": 50}}
+    ]
+}
+

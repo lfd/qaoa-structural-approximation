@@ -1,0 +1,11 @@
+{
+    "load": "./sat.py",
+
+    "workers": 14,
+
+    "iterations": 500,
+
+    "batch": "./sat.batch",
+
+    "seed": 916539032
+}

@@ -1,0 +1,10 @@
+{
+    "instances":
+    [
+        {"data": {"n":  8, "num_clauses": 32, "phi": 1.2}} 
+        ,{"data": {"n":  9, "num_clauses": 36, "phi": 1.2}}
+        ,{"data": {"n": 10, "num_clauses": 40, "phi": 1.2}}
+        ,{"data": {"n": 11, "num_clauses": 44, "phi": 1.2}}
+    ]
+}
+

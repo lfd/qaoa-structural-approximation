@@ -1,0 +1,12 @@
+{
+    "load": "./clustered_target_preopt.py",
+
+    "workers": 30,
+
+    "iterations": 100,
+
+    "batch": "./clustered_target_preopt.batch",
+
+    "seed": 603790818
+
+}

@@ -1,0 +1,9 @@
+{
+    "instances":
+    [
+         {"data": {"n":  8, "num_clauses": 16, "nsamples": 50}} 
+        ,{"data": {"n":  8, "num_clauses": 32, "nsamples": 50}} 
+        ,{"data": {"n":  8, "num_clauses": 48, "nsamples": 50}} 
+    ]
+}
+

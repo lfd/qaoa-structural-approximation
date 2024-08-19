@@ -1,0 +1,11 @@
+{
+    "load": "./qrfactoring_approx_vs_exact.py",
+
+    "workers": 14,
+
+    "iterations": 100,
+
+    "batch": "./qrfactoring_approx_vs_exact.batch",
+
+    "seed": 659106840 
+}

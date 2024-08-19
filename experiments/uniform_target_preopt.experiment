@@ -1,0 +1,11 @@
+{
+    "load": "./uniform_target_preopt.py",
+
+    "workers": 20,
+
+    "iterations": 50,
+
+    "batch": "./uniform_target_preopt.batch",
+
+    "seed": 119478943
+}
