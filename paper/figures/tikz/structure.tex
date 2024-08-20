@@ -1,0 +1,215 @@
+\documentclass[aps,rpx,reprint,amsmath,amssymb]{revtex4-2}
+
+\usepackage[active,tightpage,psfixbb]{preview}
+
+\renewcommand{\PreviewBbAdjust}{0pt 0pt 4pt 0pt}
+
+\usepackage{physics2}
+\usephysicsmodule{ab, ab.braket, diagmat}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%\usepackage[libertine]{newtxmath}
+\usepackage{tikz}
+\usepackage{yquant}
+\usepackage{pdfrender}
+
+\usetikzlibrary{calc, fit, shadows.blur}
+
+\newcommand*{\fatten}[1][.4pt]{%
+  \textpdfrender{
+    TextRenderingMode=FillStroke,
+    LineWidth={\dimexpr(#1)\relax},
+  }%
+}
+
+\DeclareMathOperator*{\Cov}{Cov}
+\DeclareMathOperator*{\Var}{Var}
+
+\newcommand{\vcont}{\raisebox{0.5em}{\(\vdots\)}}
+\newcommand{\mangle}{\beta}
+\newcommand{\pangle}{\gamma}
+
+\definecolor{lfd1}{HTML}{FFFFFF} % For background use, white is colour 1
+\definecolor{lfd2}{HTML}{E69F00}
+\definecolor{lfd3}{HTML}{999999}
+\definecolor{lfd4}{HTML}{009371}
+\definecolor{lfdblue}{HTML}{1f78b4}
+
+\tikzset{group/.style={rectangle, sharp corners,
+                       draw=none, fill=#1, nearly transparent}}
+\tikzset{compute/.style={fill=lfd2!40}}
+\newcommand{\WIDTH}{2.55cm}
+\newcommand{\HEIGHT}{1.65cm}
+\tikzset{box/.style={rectangle, draw, fill=#1,
+                     align=center, blur shadow},
+         box/.default=white}
+\tikzset{ibox/.style={box, minimum width=\WIDTH,
+                     minimum height=\HEIGHT},
+         box/.default=white}
+\tikzset{varStyle/.style={draw, thin, solid, double}}
+\tikzset{dataStyle/.style={draw, semithick, dashed}}
+\tikzset{label/.style={fill=black!50, inner sep=0pt, text=white}}
+\newcommand{\onbg}[1]{\begin{pgfonlayer}{background}%
+                      #1\end{pgfonlayer}}
+\def\dist{1.75em}                      
+\newcommand{\iterationnf}{\(\textcolor{lfd4}{\circlearrowright}\)}
+\newcommand{\iteration}{\fatten[0.7pt]{\iterationnf}}
+
+\pgfmathsetseed{19101978}
+
+\newcommand{\blurellipse}[2]{%
+%\draw[draw=none, blur shadow] (0,0) ellipse (#1 and #2);
+\node[rectangle, anchor=south west, draw=none, blur shadow, rounded corners, minimum width=2*#1, minimum height=2*#2] at (-#1,-#2) {};
+}
+
+\newcommand{\randellipse}[3]{%
+%\draw (0,0) ellipse (#1 and #2);
+\node[rectangle, anchor=south west, draw, rounded corners, minimum width=2*#1, minimum height=2*#2] at (-#1,-#2) {};
+\clip (0,0) ellipse (#1 and #2);
+\foreach \p in {1,...,#3} {
+    \fill[black] (#1*rand,#2*rand) circle (0.35pt);
+}}
+
+\newcommand{\invisellipse}[3]{%
+\draw[draw=none,fill=none] (0,0) ellipse (#1 and #2);
+}
+
+\newcommand{\sublabel}[2]{\node[anchor=south west] at (#1.south west) {\(\bm{#2}\)};}
+\newcommand{\flabel}[2]{\sublabel{qaoa#1}{F^{(#2)}_{1}(\mangle, \pangle)}}
+
+\begin{document}
+\begin{preview}
+\begin{tikzpicture}
+    \pgfdeclarelayer{background}\pgfsetlayers{background,main}
+    \node[matrix, ibox, anchor=north west] (instance1) at (0,0) {
+        \randellipse{1.5em}{0.75em}{20} &&
+        \randellipse{1em}{1em}{50} \\
+        & \randellipse{0.75em}{1em}{120} &\\
+    };
+
+    \node[matrix, ibox, anchor=north west] (instance2) at (3,0) {
+        \randellipse{1.5em}{0.75em}{120} &&
+        \randellipse{1em}{1em}{50} \\
+        & \randellipse{0.75em}{1em}{20} &\\
+    };
+
+    \node[matrix, ibox, anchor=north west] (instance3) at (6,0) {
+        \randellipse{1.5em}{0.75em}{20} &&
+        \randellipse{1em}{1em}{120} \\
+        & \randellipse{0.75em}{1em}{50} &\\
+    };
+
+    \coordinate (bl) at ([yshift=0.5em]instance1.north west);
+    \coordinate (tr) at ([yshift=2em]instance3.north east);
+    \node[label, fit=(bl) (tr)] (topi) { };
+    \node[anchor=center, text=white] at (topi.center) { Instance Hamming Structures };
+    
+    \node[matrix, ibox, anchor=north west] (global) at (3,-3) {
+        \blurellipse{1.5em}{0.75em} &&
+        \blurellipse{1em}{1em} \\
+        & \blurellipse{0.75em}{1em} &\\
+    };
+
+    \node[anchor=south west] at (global.south west) {
+      \(\bm{w_{d_1,d_2}(\pangle)}\)
+    };
+    \node[anchor=south, fill=black!50, text=white, align=center, rotate=90] (gps) at ([xshift=-0.5em]global.west) { Global\\Problem\\Structure };
+
+    \coordinate (center) at ($(instance2.south)!0.5!(global.north)$);
+    \draw[draw=none] (instance1.south |- center) -- (center)
+                     node[below,pos=0.7] {\small\emph{Sampling}};
+    \draw[draw=none] (instance3.south |- center) -- (center)
+                     node[below,pos=0.725] (analytic) {\small\emph{Analytic}};
+    
+    \draw[-Stealth, dataStyle] (instance2.south) -- (global.north);
+    \draw[-Stealth, dataStyle] (instance3.south) |- (center) -- (global.north);
+    \draw[-Stealth, dataStyle] (instance1.south) |- (center) -- (global.north);
+
+    \newcommand{\lscapeimg}[2]{\node[opacity=0.5] at (#1.center) { \includegraphics[width=\WIDTH]{figures/generated/landscape#2.pdf} };}
+    \node[ibox, anchor=north west] (avginf) at (3,-6) {};
+    \lscapeimg{avginf}{4}
+    \sublabel{avginf}{\textcolor{lfd2}{\tilde{E}(F_{1}(\mangle, \pangle)}}
+    
+
+    \draw[-Stealth] (global.south) -- (avginf.north);
+
+    %%%%%%%%% Combinatorial Decision Problems %%%%%%%%%%%%%%%%%
+    \newcommand{\binimg}[2]{\node[opacity=0.5] at (#1.center) { \includegraphics[width=\WIDTH]{figures/generated/binary#2.pdf} };}
+    \node[ibox, anchor=north west] (landscape1) at ($(-3,0) - (1em,0)$) { };
+    \binimg{landscape1}{1}
+    \node[anchor=south west] at (landscape1.south west) {\(\bm{c^{(3)}(\vec{z})}\)};
+
+    \node[ibox, anchor=north west] (landscape2) at ($(-6,0) - (1em,0)$) { };
+    \binimg{landscape2}{2}
+    \node[anchor=south west] at (landscape2.south west) {\(\bm{c^{(2)}(\vec{z})}\)};
+
+    \node[ibox, anchor=north west] (landscape3) at ($(-9,0) - (1em,0)$) { };    
+    \binimg{landscape3}{3}
+    \node[anchor=south west] at (landscape3.south west) {\(\bm{c^{(1)}(\vec{z})}\)};
+
+    %%%%%%%%%%%% QAOA Optimisation Landscapes %%%%%%%%%%%%%%%%%%
+    \node[ibox, anchor=north west] (qaoa1) at ($(-3,-3) - (1em,0)$) { };
+    \lscapeimg{qaoa1}{1}
+    \flabel{1}{3}
+
+    \node[ibox, anchor=north west] (qaoa2) at ($(-6,-3) - (1em,0)$) { };
+    \lscapeimg{qaoa2}{2}
+    \flabel{2}{2}
+
+    \node[ibox, anchor=north west] (qaoa3) at ($(-9,-3) - (1em,0)$) { };    
+    \lscapeimg{qaoa3}{3}
+    \flabel{3}{1}
+
+    \foreach\i in{1,2,3} { \draw[-Stealth] (landscape\i.south) -- (qaoa\i.north); }
+
+    \coordinate (bl) at ([yshift=0.5em]landscape1.north east);
+    \coordinate (tr) at ([yshift=2em]landscape3.north west);
+    \node[label, fit=(bl) (tr)] (topl) { };
+    \node[anchor=center, text=white] at (topl.center) { Instance Landscapes };  
+
+    \node[ibox, anchor=north west] (avglscape) at ($(-6,-6) - (1em,0)$) { };
+    \lscapeimg{avglscape}{4}
+    \sublabel{avglscape}{\textcolor{lfd4}{E(F_{1}(\mangle, \pangle)}}
+
+    \coordinate (center) at ($(qaoa2.south)!0.5!(avglscape.north)$);
+    \draw[-Stealth] (qaoa1.south) |- (center) -- (avglscape.north);
+    \draw[-Stealth] (qaoa2.south) -- (avglscape.north);
+    \draw[-Stealth] (qaoa3.south) |- (center) -- (avglscape.north);
+
+    \newcommand{\avglabel} { \node[anchor=north, fill=black!50, text=white, align=center] (avglabel) at ([yshift=-0.5em]avglscape.south) { Expected\\Landscape };}
+    \avglabel
+    \coordinate (tl) at ($(avglscape.north west)!(avglabel.north west)!(avglscape.south west)$);
+    \coordinate (br) at ($(avglscape.north east)!(avglabel.south west)!(avglscape.south east)$);
+    \node[fill=black!50, draw=none, inner sep=0pt, fit=(tl) (br), align=center] { };
+    \avglabel
+
+    \newcommand{\explabel} { \node[anchor=north, fill=black!50, text=white, align=center] (explabel) at ([yshift=-0.5em]avginf.south) { Approximated\\Landscape };}
+    \explabel
+    \coordinate (tl) at ($(avginf.north west)!(avglabel.north west)!(avginf.south west)$);
+    \coordinate (br) at ($(avginf.north east)!(avglabel.south west)!(avginf.south east)$);
+    \node[fill=black!50, draw=none, inner sep=0pt, fit=(tl) (br), align=center] { };
+    \explabel
+
+%    \coordinate (center) at ($(landscape2.south)!0.5!(avglscape.north)$);
+%    \draw[-Stealth] (landscape1.south) |- (center) -- (avglscape.north);
+%    \draw[-Stealth] (landscape2.south) -- (avglscape.north);
+%    \draw[-Stealth] (landscape3.south) |- (center) -- (avglscape.north);
+
+    \draw[Stealth-Stealth, varStyle] (avglscape.east) -- (avginf.west) node[midway, below, font=\footnotesize] { \(\ab|\textcolor{lfd4}{E\ab(F_1)} - \textcolor{lfd2}{\tilde{E}\ab(F_1)}| \leq \sqrt{\Var\ab(\ab|T|) \Var\ab(\overline{\ab|c_k|^2})}\)} node[midway, above] {Bounded Difference};
+
+    \coordinate (linetop) at ($(topi.north east)!0.5!(topl.north west)$);
+    \draw[black,thick,dotted]  (linetop) -- ($(global.south east)!(linetop)!(global.south west)$);
+
+    \coordinate (bl) at ($(avglscape.north west)!(avglabel.south west)!(avglscape.south west)$);
+
+    \coordinate (corner) at ($(avglscape.north west -| gps.north) + (-5pt, 5pt)$);
+    \coordinate (blshift) at ([xshift=-5pt, yshift=-5pt]bl);
+    \begin{pgfonlayer}{background}
+        \fill[group=lfdblue, inner sep=2pt, rounded corners] 
+              (blshift) |- (corner) |- ([yshift=5pt]analytic.north east) |- 
+              (blshift) -- cycle;
+    \end{pgfonlayer}
+\end{tikzpicture}
+\end{preview}
+
+\end{document}

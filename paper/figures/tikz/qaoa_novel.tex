@@ -1,0 +1,147 @@
+\documentclass[aps,rpx,reprint,amsmath,amssymb]{revtex4-2}
+
+\usepackage[active,tightpage,psfixbb]{preview}
+
+\renewcommand{\PreviewBbAdjust}{0pt -4pt 0pt 0pt 0pt}
+
+\usepackage{physics2}
+\usephysicsmodule{ab, ab.braket, diagmat}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%\usepackage[libertine]{newtxmath}
+\usepackage{tikz}
+\usepackage{yquant}
+\usepackage{pdfrender}
+
+\usetikzlibrary{calc, fit, shadows.blur}
+
+\newcommand*{\fatten}[1][.4pt]{%
+  \textpdfrender{
+    TextRenderingMode=FillStroke,
+    LineWidth={\dimexpr(#1)\relax},
+  }%
+}
+
+\newcommand{\vcont}{\raisebox{0.5em}{\(\vdots\)}}
+\newcommand{\mangle}{\beta}
+\newcommand{\pangle}{\gamma}
+
+\definecolor{lfd1}{HTML}{FFFFFF} % For background use, white is colour 1
+\definecolor{lfd2}{HTML}{E69F00}
+\definecolor{lfd3}{HTML}{999999}
+\definecolor{lfd4}{HTML}{009371}
+\definecolor{lfdblue}{HTML}{1f78b4}
+
+\tikzset{group/.style={rectangle, sharp corners,
+                       draw=none, fill=#1, nearly transparent}}
+\tikzset{compute/.style={fill=lfd2!40}}
+\newcommand{\WIDTH}{2.55cm}
+\newcommand{\HEIGHT}{1.65cm}
+\tikzset{box/.style={rectangle, draw, fill=#1,
+                     align=center, blur shadow},
+         box/.default=white}
+\tikzset{ibox/.style={box, minimum width=\WIDTH,
+                     minimum height=\HEIGHT},
+         box/.default=white}
+\tikzset{varStyle/.style={draw, thin, solid, double}}
+\tikzset{dataStyle/.style={draw, semithick, dashed}}
+\tikzset{label/.style={fill=black!50, inner sep=0pt, text=white}}
+\newcommand{\onbg}[1]{\begin{pgfonlayer}{background}%
+                      #1\end{pgfonlayer}}
+\def\dist{1.75em}                      
+\newcommand{\iterationnf}{\(\textcolor{lfd4}{\circlearrowright}\)}
+\newcommand{\iteration}{\fatten[0.7pt]{\iterationnf}}
+
+\begin{document}
+\begin{preview}
+\begin{tikzpicture}
+\pgfdeclarelayer{background}\pgfsetlayers{background,main}
+
+\begin{yquant}[operator/separation=5mm]
+  [name=tlqbit] qubit {\(\ket|+>\)} q[2];
+  qubit {\vcont\hspace{0.75em}} sep;
+  [name=qbit] qubit {\(\ket|+>\)} p[1];
+
+  [style={draw=black},name=mixer] box {$e^{-i \mangle \hat{X}} $} (q, sep, p) ;
+  [style={draw=black},name=problem] box {$e^{-i \pangle \hat{C}}$} (q, sep, p) ;
+
+  [name=meas1] measure q;
+  [name=meas4] measure sep;
+  [name=meas4] measure p;
+
+  [style={draw=black},name=pp] box { \rotatebox{90}{ Sample }} (q, sep, p);
+  discard q; discard sep; discard p;
+\end{yquant}
+    \coordinate (bl) at ([yshift=\dist]mixer.north west);
+    \coordinate (br) at ([yshift=\dist]problem.north east);
+
+    \newcommand{\optnode}{\node[draw=none,anchor=south] 
+                (optimisation) at ($(bl)!0.5!(br)$) { Optimisation };}
+    \optnode
+
+    \coordinate (tr) at ($(problem.north east)!(optimisation.north east)!(br)$);
+    \coordinate (tl) at ($(mixer.north west)!(optimisation.north west)!(bl)$);    
+
+    % We redraw the optimisation node to avoid colour mixup
+    % with the background
+    \node[box, inner sep=0pt, compute, fit=(bl) (tr)] {};
+    \optnode
+% random instances ->
+% sample (partial) target space
+% -> optimisation to obtain \mangle, \pangle
+% => Run QAOA circuit + sample
+
+    \draw[dataStyle,-Stealth] ($(bl)!(mixer.north)!(br)$) -- (mixer.north);
+    \draw[dataStyle,-Stealth] ($(bl)!(problem.north)!(br)$) -- (problem.north);
+
+    \node[box, anchor=south east, align=center] (ts) at 
+          ([xshift=-\dist]qbit.south west) { Problem\\Target Space };
+    \newcommand{\samplenode}{\node[anchor=south, align=center] (sts) at 
+                             ([yshift=\dist]ts.north) { Sample\\\(\tilde{E}(F_{1})\) };}
+    \samplenode
+
+    \coordinate (sample_bl) at ($(sts.south west)!(ts.north west)!(sts.south east)$);
+    \coordinate (sample_tr) at ($(sts.north west)!(ts.north east)!(sts.north east)$);
+    \coordinate (sample_tl) at ($(sts.north east)!(ts.north west)!(sts.north west)$);
+    
+    % We redraw the sample node to avoid colour
+    % mixture with the background
+    \node[box, inner sep=0pt, compute, fit=(sample_bl) (sample_tr)] {};
+    \samplenode
+    \node[anchor=south west,inner sep=2pt] at (sample_bl) 
+         { \iteration };
+    \draw[varStyle] (ts.north) -- (sts.south);
+    
+%    \node[draw=none,anchor=south] (landscape) at ($(bl)!0.5!(br)$) { Problem Landscape };
+%    \coordinate (tr) at ($(landscape.north east)!(landscape.north east)!(br)$);
+%    \draw[black] (bl) -| (tr) (tr) -| (bl);
+    
+    \node[anchor=south east,inner sep=1pt] at (pp.south east) 
+         { \iteration };
+
+    \node[box,anchor=north] (instance) at 
+                             ([yshift=-\dist]problem.south) { Instance};
+    \draw[dataStyle,-Stealth] (instance.north) -- (problem.south);
+
+    % Non-visible nodes to determine outline 
+    % for global portion of the computation
+    \node[draw=none, fill=none,
+          fit=(ts.south west) (sample_tr)] (global) {};
+    \node[draw=none, fill=none, fit=(bl) (tr)] (opt_outline) {};
+
+    \begin{pgfonlayer}{background}
+        \fill[group=lfdblue, rounded corners] (global.south west) |- 
+                 (opt_outline.north east) |- 
+                 ($(opt_outline.south east)!(global.north east)!(opt_outline.south west)$) |- 
+                 (global.south west) -- cycle; 
+        \node[fill=gray!25, draw=none, rounded corners, fit=(tlqbit-0.north west) (pp.south east) (meas4.south)] (outline) {};
+    \end{pgfonlayer}
+    
+    \draw[dataStyle,-Stealth] (sts.north) |- ($(bl)!0.5!(tl)$);
+
+    \coordinate (center) at ($(global.west |- optimisation.north)!0.5!(outline.east |- optimisation.north)$);
+    \node at ([yshift=\dist]center) {\emph{Non-Iterative QAOA}};
+\end{tikzpicture}
+\end{preview}
+
+\end{document}

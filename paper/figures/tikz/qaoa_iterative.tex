@@ -1,0 +1,114 @@
+\documentclass[aps,rpx,reprint,amsmath,amssymb]{revtex4-2}
+
+\usepackage[active,tightpage,psfixbb]{preview}
+
+\renewcommand{\PreviewBbAdjust}{0pt -4pt 0pt 0pt 0pt}
+
+\usepackage{physics2}
+\usephysicsmodule{ab, ab.braket, diagmat}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+%\usepackage[libertine]{newtxmath}
+\usepackage{tikz}
+\usepackage{yquant}
+\usepackage{pdfrender}
+
+\usetikzlibrary{calc, fit, shadows.blur}
+
+\newcommand*{\fatten}[1][.4pt]{%
+  \textpdfrender{
+    TextRenderingMode=FillStroke,
+    LineWidth={\dimexpr(#1)\relax},
+  }%
+}
+
+\newcommand{\vcont}{\raisebox{0.5em}{\(\vdots\)}}
+\newcommand{\mangle}{\beta}
+\newcommand{\pangle}{\gamma}
+
+\definecolor{lfd1}{HTML}{FFFFFF} % For background use, white is colour 1
+\definecolor{lfd2}{HTML}{E69F00}
+\definecolor{lfd3}{HTML}{999999}
+\definecolor{lfd4}{HTML}{009371}
+\definecolor{lfdblue}{HTML}{1f78b4}
+
+\tikzset{group/.style={rectangle, sharp corners,
+                       draw=none, fill=#1, nearly transparent}}
+\tikzset{compute/.style={fill=lfd2!40}}
+\newcommand{\WIDTH}{2.55cm}
+\newcommand{\HEIGHT}{1.65cm}
+\tikzset{box/.style={rectangle, draw, fill=#1,
+                     align=center, blur shadow},
+         box/.default=white}
+\tikzset{ibox/.style={box, minimum width=\WIDTH,
+                     minimum height=\HEIGHT},
+         box/.default=white}
+\tikzset{varStyle/.style={draw, thin, solid, double}}
+\tikzset{dataStyle/.style={draw, semithick, dashed}}
+\tikzset{label/.style={fill=black!50, inner sep=0pt, text=white}}
+\newcommand{\onbg}[1]{\begin{pgfonlayer}{background}%
+                      #1\end{pgfonlayer}}
+\def\dist{1.75em}                      
+\newcommand{\iterationnf}{\(\textcolor{lfd4}{\circlearrowright}\)}
+\newcommand{\iteration}{\fatten[0.7pt]{\iterationnf}}
+
+\begin{document}
+\begin{preview}
+\begin{tikzpicture}
+\pgfdeclarelayer{background}\pgfsetlayers{background,main}
+\begin{yquant}[operator/separation=5mm]
+  qubit {\(\ket|+>\)} q[2];
+  qubit {\vcont\hspace{0.75em}} sep;
+  qubit {\(\ket|+>\)} p[1];
+
+  [style={draw=black},name=mixer] box {$e^{-i \mangle \hat{X}} $} (q, sep, p) ;
+  [style={draw=black},name=problem] box {$e^{-i \pangle \hat{C}}$} (q, sep, p) ;
+
+  [name=meas1] measure q;
+  [name=meas4] measure sep;
+  [name=meas4] measure p;
+
+  [style={draw=black,align=center},name=pp] box { \rotatebox{90}{Sample}} (q, sep, p);
+  discard q; discard sep; discard p;
+\end{yquant}
+    \coordinate (bl) at ([yshift=\dist]mixer.north west);
+    \coordinate (br) at ([yshift=\dist]problem.north east);
+    
+    \newcommand{\optnode}{\node[draw=none,anchor=south] (optimisation) at ($(bl)!0.5!(br)$) { Optimisation };}
+    \optnode
+    
+    \coordinate (tr) at ($(problem.north east)!(optimisation.north east)!(br)$);
+    \coordinate (tl) at ($(mixer.south west)!(tr)!(mixer.south east)$);
+    \node[box, inner sep=0pt, compute, fit=(bl) (tr)]  (optbox) { };
+    \optnode
+
+    \coordinate (iob) at ($(bl)!(optimisation.west)!(tl)$);
+    \newcommand{\instoptnode}{\node[anchor=south east] (instance_opt) at ([xshift=-\dist]bl) { Instance\vphantom{p} };}
+    \instoptnode
+    \node[box, inner sep=0pt, fit=($(optbox.south east)!(instance_opt.west)!(optbox.south west)$)
+          ($(optbox.north east)!(instance_opt.east)!(optbox.north west)$)] (iobox) {};
+    \instoptnode
+    
+    \draw[varStyle,-] (instance_opt.east) -- (optbox.west);
+    
+    \draw[dataStyle,-Stealth] ($(bl)!(mixer.north)!(br)$) -- (mixer.north);
+    \draw[dataStyle,-Stealth] ($(bl)!(problem.north)!(br)$) -- (problem.north);
+    \coordinate (flow_tr) at ($(optimisation.west)!([xshift=\dist]pp.east)!(optimisation.east)$);
+    \draw[dataStyle,-Stealth] (pp.east) -| (flow_tr) -- ($(br)!0.5!(tr)$);
+
+    \node[anchor=north east] at (flow_tr) { \iteration };
+    \node[anchor=south east,inner sep=1pt] at (pp.south east) { \iteration };
+
+    \node[box, anchor=north] (instance) at ([yshift=-\dist]problem.south) { Instance};
+    \draw[dataStyle, -Stealth] (instance.north) -- (problem.south);
+
+    \begin{pgfonlayer}{background}
+        \node[fill=gray!25, draw=none, rounded corners, fit=(instance_opt.north west) (pp.south east) (meas4.south) (flow_tr)] (outline) {};
+    \end{pgfonlayer}
+
+    \coordinate (center) at ($(outline.west |- optimisation.north)!0.5!(outline.east |- optimisation.north)$);
+    \node at ([yshift=\dist]center) {\emph{Standard QAOA}};
+\end{tikzpicture}
+\end{preview}
+
+\end{document}

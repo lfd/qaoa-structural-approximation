@@ -1,0 +1,115 @@
+\documentclass[10pt]{standalone} 
+
+\usepackage{physics2}
+\usephysicsmodule{ab, ab.braket, diagmat}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[tt=false, type1=true]{libertine}
+%\usepackage[varqu]{zi4}
+\usepackage[libertine]{newtxmath}
+\usepackage{tikz}
+\usepackage{yquant}
+\useyquantlanguage{groups}
+
+\usetikzlibrary{quotes}
+
+\begin{document}
+
+
+%\yquantdefinebox{dots}[inner sep=0pt]{$\dots$}
+\yquantdefinebox{vdots}[inner sep=0pt]{$\vdots$}
+\yquantdefinebox{Up1}{$U_{+1}$}
+\yquantdefinebox{Um1}{$U_{-1}$}
+
+\begin{tikzpicture}
+\begin{yquantgroup}
+\registers{
+    qubit {$|z_1\rangle$} z1;
+    qubit {$|z_2\rangle$} z2;
+    nobit vexp; 
+    qubit {$|z_n \rangle$} zn;
+    qubit {$|y\rangle$} y;
+}
+\circuit{
+
+    vdots vexp;
+    [this subcircuit box style={draw, "$D_H$"}, register/default name=]
+    subcircuit {
+        qubit z1;
+        qubit z2;
+        nobit vexp;
+        qubit zn;
+        qubit y;
+
+        Up1 y | z1;
+        Up1 y | z2;
+        text {$\dots$} z1, z2, zn, y;
+        Up1 y | zn;
+    } (z1-y);
+}
+
+\circuit[outer xsep=2em]{
+    vdots vexp;
+    [this subcircuit box style={draw, "$D^\dagger_H$"}, register/default name=]
+    subcircuit {
+        qubit z1;
+        qubit z2;
+        nobit vexp;
+        qubit zn;
+        qubit y;
+
+        Um1 y | zn;
+        text {$\dots$} z1, z2, zn, y;
+        Um1 y | z2;
+        Um1 y | z1;
+    } (z1-y);
+}
+\end{yquantgroup}
+\begin{scope}[shift={(-0.5,-4)}]
+\begin{yquantgroup}
+\registers{
+    qubit {$|y_1\rangle$} y1;
+    qubit {$|y_2\rangle$} y2;
+    nobit vexp; 
+    qubit {$|y_{m-1} \rangle$} ym0;
+    qubit {$|y_m\rangle$} ym;
+}
+\circuit{
+
+    vdots vexp;
+    [this subcircuit box style={draw, "$U_{+1}$"}, register/default name=]
+    subcircuit {
+        qubit y1;
+        qubit y2;
+        nobit vexp;
+        qubit ym0;
+        qubit ym;
+
+        cnot ym | y1, y2, ym0;
+        cnot ym0 | y1, y2;
+        text {$\dots$} y1, y2, ym0, ym;
+        cnot y2 | y1;
+        cnot y1;
+    } (y1-ym);
+}
+\circuit[outer xsep=2em]{
+    vdots vexp;
+    [this subcircuit box style={draw, "$U_{-1}$"}, register/default name=]
+    subcircuit {
+        qubit y1;
+        qubit y2;
+        nobit vexp;
+        qubit ym0;
+        qubit ym;
+
+        cnot ym | ~y1, y2, ym0;
+        cnot ym0 | ~y1, y2;
+        text {$\dots$} y1, y2, ym0, ym;
+        cnot y2 | ~y1;
+        cnot y1;
+    } (y1-ym);
+}
+\end{yquantgroup}
+\end{scope}
+\end{tikzpicture}
+\end{document}

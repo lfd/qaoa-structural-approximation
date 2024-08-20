@@ -1,0 +1,53 @@
+\documentclass[border=2px]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usepackage{comment}
+\usepackage{bm}
+\usepackage[compat=0.6]{yquant}
+\usetikzlibrary{calc}
+\usetikzlibrary{fit}
+\usetikzlibrary{shadows.blur}
+\usepackage{physics2}
+\usephysicsmodule{ab, ab.braket, diagmat, ab.legacy}
+\usepackage{pdfrender}
+
+\newcommand*{\fatten}[1][.4pt]{%
+  \textpdfrender{
+    TextRenderingMode=FillStroke,
+    LineWidth={\dimexpr(#1)\relax},
+  }%
+}
+
+\newcommand{\iteration} {\(\textcolor{lfd4}{\fatten[0.7pt]{\circlearrowright}}\)}
+\newcommand{\mangle}{\beta}
+\newcommand{\pangle}{\gamma}
+\newcommand{\vcont}{\raisebox{0.5em}{\(\vdots\)}}
+\DeclareMathOperator*{\Var}{Var}
+\definecolor{lfd1}{HTML}{FFFFFF} % For background use, white is colour 1
+\definecolor{lfd2}{HTML}{E69F00}
+\definecolor{lfd3}{HTML}{999999}
+\definecolor{lfd4}{HTML}{009371}
+\definecolor{lfdblue}{HTML}{1f78b4}%Blau
+
+\newcommand{\WIDTH}{2.55cm}
+\newcommand{\HEIGHT}{1.65cm}
+\tikzset{group/.style={rectangle, sharp corners,
+                       draw=none, fill=#1, nearly transparent}}
+\tikzset{compute/.style={fill=lfd2!40}}
+\tikzset{box/.style={rectangle, draw, fill=#1,
+                     align=center, blur shadow},
+         box/.default=white}
+\tikzset{ibox/.style={box, minimum width=\WIDTH,
+                     minimum height=\HEIGHT},
+         box/.default=white}
+\tikzset{varStyle/.style={draw, thin, solid, double}}
+\tikzset{dataStyle/.style={draw, semithick, dashed}}
+\tikzset{label/.style={fill=black!50, inner sep=0pt, text=white}}
+\def\dist{2em}
+
+\newcommand{\onbg}[1]{\begin{pgfonlayer}{background}%
+                      #1\end{pgfonlayer}}
+
+\begin{document}
+\input{structure.tex}
+\end{document}

@@ -1,0 +1,194 @@
+\pdfminorversion=3
+\documentclass[aps,prx,reprint,groupedaddress,nofootinbib,
+               amsmath,amssymb,superscriptaddress,
+               floatfix,balancelastpage]{revtex4-2}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[a-1b]{pdfx} % x-1a, a-1b
+\usepackage{mathtools}
+\usepackage{dsfont}
+
+\usepackage{physics2}
+\usephysicsmodule{ab, ab.braket, diagmat, ab.legacy}
+\usepackage{todonotes}
+\usepackage{xcolor}
+\usepackage{placeins}
+\usepackage{csquotes}
+\usepackage{comment}
+\usepackage{bm}
+\usepackage{url}
+\usepackage{etoolbox}
+\usepackage{xspace}
+\usepackage{xcolor}
+\usepackage{xfrac}
+\usepackage[expansion, protrusion]{microtype}
+\usepackage{tikz}
+\usetikzlibrary{calc, fit, shadows.blur}
+\usepackage[compat=0.6]{yquant}
+\usepackage{bm}
+
+\usepackage{amsthm}
+\usepackage[capitalise]{cleveref}
+\usepackage{balance}
+\usepackage{pdfrender}
+\usepackage{bold-extra}
+\usepackage{censor}
+\hypersetup{colorlinks=true,urlcolor=teal,
+            linkcolor=teal,citecolor=teal}
+
+\newboolean{anonymous}
+\setboolean{anonymous}{false}
+\ifbool{anonymous}{}{\renewcommand{\censor}[1]{#1}}
+\ifbool{anonymous}{}{\renewcommand{\blackout}[1]{#1}}
+\ifbool{anonymous}{\newcommand{\genemail}[2]{\href{mailto:xxx.xxx@xx.xx}{\blackout{#2}}}}{\newcommand{\genemail}[2]{\href{#1}{#2}}}
+
+\newcommand*{\fatten}[1][.4pt]{%
+  \textpdfrender{
+    TextRenderingMode=FillStroke,
+    LineWidth={\dimexpr(#1)\relax},
+  }%
+}
+
+\newcommand{\todoil}[1]{\todo[inline]{#1}}
+\newtoggle{shownotes}
+\newtoggle{showsketches}
+
+\toggletrue{shownotes}
+\togglefalse{showsketches}
+
+
+\newcommand{\todotext}[1]{\iftoggle{shownotes}{\textcolor{red}{#1}}{}}
+\newcommand{\sketch}[1]{\iftoggle{showsketches}{\textcolor{gray}{#1}}{}}
+
+\newcommand{\cconj}[1]{\overline{#1}}
+\DeclareMathOperator*{\Cov}{Cov}
+\DeclareMathOperator*{\Var}{Var}
+
+\DeclareMathOperator*{\lb}{ld}
+\DeclareMathOperator*{\is}{is}
+\DeclareMathOperator*{\diag}{diag}
+
+\DeclareMathOperator*{\hypgeom}{HypG}
+\DeclareMathOperator*{\mvhypgeom}{mv-Hypergeometric}
+
+\newcommand{\nrof}[1]{\#_{#1}}
+\newcommand{\indicf}[2]{\chi_{#1}\ab(#2)}
+
+\newcommand{\mangle}{\beta}
+\newcommand{\pangle}{\gamma}
+\newcommand{\NP}{\textup{\textsc{\textbf{NP}}}\xspace}
+\newcommand{\QAOA}{\textsc{qaoa}\xspace}
+\newcommand{\NISQ}{\textsc{nisq}\xspace}
+\newcommand{\SAT}{\textsc{sat}\xspace}
+\newcommand{\ourQAOA}{non-iterative \QAOA}
+\newcommand{\QUBO}{\textsc{qubo}\xspace}
+\newcommand{\QUBOs}{\textsc{qubo}s\xspace}
+\newcommand{\VQC}{\textsc{vqc}\xspace}
+\newcommand{\VQCs}{\textsc{vqc}s\xspace}
+\newcommand{\maxcut}{Max-Cut\xspace}
+\newcommand{\ind}{\chi}
+\newcommand{\kclique}{$k$-\textsc{Clique}\xspace}
+\newcommand{\qrfactoring}{$qr$-\textsc{Factoring}\xspace}
+\newcommand{\Ccliques}{C_{\text{cliques}}}
+\newcommand{\Cdhk}{C_{d_H = k}}
+\newcommand{\vcont}{\raisebox{0.5em}{\(\vdots\)}}
+
+\newcommand{\sqboxsquare}[1]{%
+    \begin{tikzpicture}
+        \fill[#1] (0,0) rectangle (1.2ex, 1.2ex);
+    \end{tikzpicture}
+}
+
+\newcommand{\sqbox}[1]{%
+    \raisebox{0.15em}{\begin{tikzpicture}
+        \fill[#1] (0,0.25em) rectangle (2.4ex, 0.5em);
+    \end{tikzpicture}}
+}
+
+\definecolor{lfd1}{HTML}{FFFFFF} % For background use, white is colour 1
+\definecolor{lfd2}{HTML}{E69F00}
+\definecolor{lfd3}{HTML}{999999}
+\definecolor{lfd4}{HTML}{009371}
+\definecolor{lfdblue}{HTML}{1f78b4}
+
+\tikzset{group/.style={rectangle, sharp corners,
+                       draw=none, fill=#1, nearly transparent}}
+\tikzset{compute/.style={fill=lfd2!40}}
+\newcommand{\WIDTH}{2.55cm}
+\newcommand{\HEIGHT}{1.65cm}
+\tikzset{box/.style={rectangle, draw, fill=#1,
+                     align=center, blur shadow},
+         box/.default=white}
+\tikzset{ibox/.style={box, minimum width=\WIDTH,
+                     minimum height=\HEIGHT},
+         box/.default=white}
+\tikzset{varStyle/.style={draw, thin, solid, double}}
+\tikzset{dataStyle/.style={draw, semithick, dashed}}
+\tikzset{label/.style={fill=black!50, inner sep=0pt, text=white}}
+\newcommand{\onbg}[1]{\begin{pgfonlayer}{background}%
+                      #1\end{pgfonlayer}}
+\def\dist{1.75em}                      
+\newcommand{\iterationnf}{\(\textcolor{lfd4}{\circlearrowright}\)}
+\newcommand{\iteration}{\fatten[0.7pt]{\iterationnf}}
+
+\newcommand{\ie}{\emph{i.e.}\xspace}
+\newcommand{\eg}{\emph{e.g.}\xspace}
+\newcommand{\etal}{\emph{et al.}\xspace}
+
+\newcommand{\doirepro}{\href{https://doi.org/10.5281/zenodo.13286242}{DOI-safe}\xspace}
+\newcommand{\repro}{\href{https://github.com/lfd/qaoa-structural-approximation}{reproduction package}\xspace}
+
+
+
+\AtEndPreamble{%
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}[theorem]{Remark}}
+
+\begin{document}
+
+
+\title{Out of the Loop: Structural Approximation of Optimisation Landscapes\\and non-Iterative Quantum Optimisation}
+
+
+\author{Tom Krüger}
+
+\affiliation{%
+Technical University of Applied Sciences Regensburg,
+Regensburg, Germany}
+\email{tom.krueger@oth-regensburg.de}
+
+\author{Wolfgang Mauerer}
+
+\affiliation{%
+Technical University of Applied Sciences Regensburg, Regensburg, Germany}
+\affiliation{Siemens AG, Technology, Munich, Germany}
+\email{wolfgang.mauerer@othr.de}
+
+\include{content}
+
+\bibliography{main}
+\end{document}
