@@ -57,15 +57,7 @@ def model2state(m):
 
     return k
 
-
-def run(instance, save, state, **kwargs):
-    id = kwargs["worker_id"]
-    n = int(instance["data"]["n"])
-    num_clauses = int(instance["data"]["num_clauses"])
-    phi = instance["data"]["phi"]
-
-    np.random.seed(instance["seed"] % 2**32)
-    
+def gen_target(n, num_clauses):
     target = []
     
     while len(target) == 0:
@@ -79,6 +71,19 @@ def run(instance, save, state, **kwargs):
             target.append(model2state(m))
 
         s.delete()
+
+    return target
+
+
+def run(instance, save, state, **kwargs):
+    id = kwargs["worker_id"]
+    n = int(instance["data"]["n"])
+    num_clauses = int(instance["data"]["num_clauses"])
+    phi = instance["data"]["phi"]
+
+    np.random.seed(instance["seed"] % 2**32)
+    
+    target = gen_target(n, num_clauses)
 
     filepath = f"out/sat/out{id:03d}"
 
