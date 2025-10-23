@@ -15,7 +15,7 @@ RUN pip install /tmp/lib/pyalma && \
 RUN apt-get update && \
     apt-get install -y texlive-full
 
-RUN apt-get install -y r-base r-base-dev && \
+RUN apt-get install -y r-base r-base-dev make && \
     Rscript /tmp/install.R
 
 

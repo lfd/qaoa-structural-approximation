@@ -97,7 +97,7 @@ plot <- function() {
   plot_fit / plot_err + plot_layout(axes = "collect")
 }
 
-main <- function() write_tex_plot(plot(), "qrf.tex", width = 3.4, height = 4)
+main <- function() write_tex_plot(plot(), "qrf.tex", width = 3.2, height = 3.8)
 
 if (!interactive()) {
   main()

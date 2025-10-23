@@ -1,5 +1,7 @@
-\documentclass[aps,rpx,reprint,amsmath,amssymb]{revtex4-2}
+%\documentclass[aps,rpx,reprint,amsmath,amssymb]{revtex4-2}
+\documentclass[aps,rpx,reprint,amsmath,amssymb,a4paper,noarxiv]{quantumarticle}
 
+\usepackage{nameref}
 \usepackage[active,tightpage,psfixbb]{preview}
 
 \renewcommand{\PreviewBbAdjust}{0pt -4pt 0pt 0pt 0pt}
@@ -48,7 +50,8 @@
 \tikzset{label/.style={fill=black!50, inner sep=0pt, text=white}}
 \newcommand{\onbg}[1]{\begin{pgfonlayer}{background}%
                       #1\end{pgfonlayer}}
-\def\dist{1.75em}                      
+%\def\dist{1.75em}                      
+\def\dist{1.25em}                      
 \newcommand{\iterationnf}{\(\textcolor{lfd4}{\circlearrowright}\)}
 \newcommand{\iteration}{\fatten[0.7pt]{\iterationnf}}
 
@@ -136,6 +139,8 @@
                  (global.south west) -- cycle; 
         \node[fill=gray!25, draw=none, rounded corners, fit=(tlqbit-0.north west) (pp.south east) (meas4.south)] (outline) {};
     \end{pgfonlayer}
+
+    %\draw[red, dashed] (outline.east) -- ++(-0.5\textwidth + 0.5\columnsep,0);
     
     \draw[dataStyle,-Stealth] (sts.north) |- ($(bl)!0.5!(tl)$);
 

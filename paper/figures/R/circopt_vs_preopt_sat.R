@@ -61,7 +61,7 @@ main <- function() {
                                  "\\usepackage{physics2}",
                                  "\\usephysicsmodule{ab, ab.braket, diagmat, ab.legacy}"
                                  ))
-  tikz(file = "circopt_vs_preopt_sat.tex", width = 3.4, height = 2, standAlone = TRUE)
+  tikz(file = "circopt_vs_preopt_sat.tex", width = 3.2, height = 1.9, standAlone = TRUE)
   print(p)
 
   dev.off()

@@ -1,34 +1,131 @@
 \pdfminorversion=3
-\documentclass[aps,prx,reprint,groupedaddress,nofootinbib,
-               amsmath,amssymb,superscriptaddress,
-               floatfix,balancelastpage]{revtex4-2}
+%\documentclass[aps,prx,reprint,groupedaddress,nofootinbib,
+%               amsmath,amssymb,superscriptaddress,
+%               floatfix,balancelastpage]{revtex4-2}
+\documentclass[aps,reprint,groupedaddress,nofootinbib,
+               amsmath,amssymb,superscriptaddress,twocolumns,
+               floatfix,balancelastpage,a4paper,accepted=2025-10-17]{quantumarticle}
+
+\pdfoutput=1
+%%%%%%%%%%%%%%%%%%%%%%%%--| Rev 1 |--%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% - FIXED: I found the paper’s flow somewhat challenging to follow
+%   and needed to revisit sections multiple times for clarity. 
+%   In particular, it would be nice if authors provide more 
+%   intuition in their derivations of the energy landscape or 
+%   possibly even give an easy example to “unpack” their equations.
+%
+% - FIXED: I would like the authors to comment on the feasibility of 
+%   the proposed approach in both: the large N limit and the large
+%   circuit depth limit. While large depth limit may be beyond 
+%   the current paper, having at least a comment would benefit 
+%   the general readership.
+% 
+% - FIXED: How feasible is to approximate/estimate |T| as the system 
+%   size is increased?
+%
+% - FIXED: Regarding the circuit depth scaling: are this results 
+%   expected to hold for p > log(N) where the QAOA is able to 
+%   see the whole graph?
+
+%%%%%%%%%%%%%%%%%%%%%%%%--| Rev 2 |--%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% - The author also try to generalize the result of theorem 1
+%   to all other NP problems with theorem 2 and remark 3 but
+%   it does not satisfy me. 
+%
+% - it does not satisfy me as the generalization is not 
+%    well-explained to other combinatorial optimization cases.
+%
+% - I believe that if the scope of the paper is to characterize QAOA 
+%   optimization landscape for two-level Hamiltonian, this paper 
+%   fully answer it. Although, in TCS, angy function problem can 
+%   framed as decision problem and all NP problems are decision 
+%   problems, it is not obvious to me how to use the proposed framework
+%   to other combinatorial optimization problem like MaxCut or 
+%   Maximum Independent Set. 
+%
+% - the author also say that Hamiltonians with more complex 
+%   eigenspectra will be considered in future works. Therefore, 
+%   I do not like the scope of the paper (which try to replace 
+%   the iterative method with non-iterative method for all 
+%   combinatorial problems) as stated in the introduction and 
+%   abstract. It still does not apply for all cases.
+%
+% - The paper describe the assumptions but some important details
+%   such as the theorem only applies for single layer QAOA and
+%   two-level Hamiltonians should also be included in the introduction
+%
+% - I believe the author should mentions more clearly what they 
+%   exactly do in the introduction with more details and their 
+%   limitations (their assumption for the Hamiltonain, the need for
+%   characterizing target space, …). Due to this lack of details, 
+%   I misunderstand the purpose of the paper but only comes to 
+%   realization after reading the technical details.
+%
+% - For the literature review, I believe it is good but I think it
+%   worth mentioning some method like recursive-QAOA or other 
+%   problem-reduction QAOA type as they use the local structures of 
+%   the problem to reduce the landscape optimization complexity 
+%   (when going from bigger instance to smaller instance)
+%
+%   --------------------- suggested changes ---------------------
+% - FIXED (???): The research question posed by the abstract and 
+%   introduction is broader than the technical theory. Therefore, 
+%   I suggest rewritting the introduction to make it concise and 
+%   less misunderstanding.
+%
+% - FIXED: In the equation above eq (17), it is clear that C_d^n captures all 
+%   possible bit-flip mapping from z to k with given d-hamming distance.
+%   But it is better to clarify that to the audience.
+% 
+% - FIXED: There is format error in the paragraph after eq (18).
+%
+% - FIXED (???): For Theorem 1, it is easier for reader if you provide the 
+%   intuition beforehand for the expectation value of |T| and c_k. (i.e, 
+%   expectation value of |T| is for cardinality of target space over
+%   different random instance of a problem while c_k is for the landscape). 
+%   I only fully understand it after reading the proof. I also suggest
+%   using E notation for expectation value.
+%
+% - FIXED: In the proof for theorem 1, you first forget to multiply f_n after 
+%   expand the multiplication of brackets, second forget to put the average
+%   (bar overhead) notation on |c_k(beta, gamma)|^6 when taking the average.
+%
+% - FIXED: For the generality section, I am not satisfied with it. First, why 
+%   is a target space is isomorphic to the solution space of a problem?
+%   I understand that the target space is the space of all z that c(z) = 1,
+%   so is the solution space is just F_2^n?
+%
+% - FIXED: Theorem 2 generalize to NP-problem by stating that there exist family
+%   of constraint Hamiltonians that can be efficiently constructed that 
+%   can map to the target space of decision problem. It is true in the
+%   TCS literature as every NP problem are decision problem and the author
+%   already use this for two-level Hamiltonian with two eigenvalue 0 and 1.
+%   However, I am not sure how to use this theorem when put it in more 
+%   higher-level and complex eigenspectrum Hamiltonian?
+%   ---------------------------------------------------------------------
+%
+    %   just want to have some clarification, especially in this case where it 
+%   is not-trivial to apply this framework to well-known QUBO problems
+%
+%   An interesting question to me is how to generalize this framework to 
+%   QUBO in natural way and use this to see how QAOA landscape structure 
+%   gonna change if we use problem-reduction QAOA methods (when aggerating 
+%   the edge of a graph in multilevel scheme or eliminate the edge in recursive 
+%   scheme) or qubit-efficient encoding.
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\usepackage[utf8]{inputenc}
+\usepackage[utf8]{inputenc} 
 \usepackage[T1]{fontenc}
 \usepackage[a-1b]{pdfx} % x-1a, a-1b
+\usepackage{calc}
 \usepackage{mathtools}
 \usepackage{dsfont}
-
 \usepackage{physics2}
 \usephysicsmodule{ab, ab.braket, diagmat, ab.legacy}
 \usepackage{todonotes}
@@ -47,15 +144,19 @@
 \usetikzlibrary{calc, fit, shadows.blur}
 \usepackage[compat=0.6]{yquant}
 \usepackage{bm}
-
 \usepackage{amsthm}
 \usepackage[capitalise]{cleveref}
 \usepackage{balance}
 \usepackage{pdfrender}
 \usepackage{bold-extra}
+\usepackage{layouts}
 \usepackage{censor}
+\usepackage{makecell}
+\usepackage{subcaption}
+\usepackage{ragged2e}
 \hypersetup{colorlinks=true,urlcolor=teal,
             linkcolor=teal,citecolor=teal}
+\usepackage[numbers,sort&compress]{natbib}
 
 \newboolean{anonymous}
 \setboolean{anonymous}{false}
@@ -73,10 +174,10 @@
 \newcommand{\todoil}[1]{\todo[inline]{#1}}
 \newtoggle{shownotes}
 \newtoggle{showsketches}
-
-\toggletrue{shownotes}
+\togglefalse{shownotes}
+%\toggletrue{shownotes}
 \togglefalse{showsketches}
-
+%\toggletrue{showsketches}
 
 \newcommand{\todotext}[1]{\iftoggle{shownotes}{\textcolor{red}{#1}}{}}
 \newcommand{\sketch}[1]{\iftoggle{showsketches}{\textcolor{gray}{#1}}{}}
@@ -84,14 +185,14 @@
 \newcommand{\cconj}[1]{\overline{#1}}
 \DeclareMathOperator*{\Cov}{Cov}
 \DeclareMathOperator*{\Var}{Var}
-
+%\DeclareMathOperator*{\sd}{sd}
 \DeclareMathOperator*{\lb}{ld}
 \DeclareMathOperator*{\is}{is}
 \DeclareMathOperator*{\diag}{diag}
-
+%\DeclareMathOperator*{\hypgeom}{Hypergeometric}
 \DeclareMathOperator*{\hypgeom}{HypG}
 \DeclareMathOperator*{\mvhypgeom}{mv-Hypergeometric}
-
+%\DeclareMathOperator*{\nrofMOP}{\#}
 \newcommand{\nrof}[1]{\#_{#1}}
 \newcommand{\indicf}[2]{\chi_{#1}\ab(#2)}
 
@@ -109,6 +210,7 @@
 \newcommand{\maxcut}{Max-Cut\xspace}
 \newcommand{\ind}{\chi}
 \newcommand{\kclique}{$k$-\textsc{Clique}\xspace}
+\newcommand{\maxclique}{$\max$-\textsc{Clique}\xspace}
 \newcommand{\qrfactoring}{$qr$-\textsc{Factoring}\xspace}
 \newcommand{\Ccliques}{C_{\text{cliques}}}
 \newcommand{\Cdhk}{C_{d_H = k}}
@@ -159,10 +261,10 @@
 \newcommand{\doirepro}{\href{https://doi.org/10.5281/zenodo.13286242}{DOI-safe}\xspace}
 \newcommand{\repro}{\href{https://github.com/lfd/qaoa-structural-approximation}{reproduction package}\xspace}
 
-
+%\citestyle{acmauthoryear}
 
 \AtEndPreamble{%
-
+%\theoremstyle{acmdefinition}
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{definition}{Definition}
@@ -170,25 +272,31 @@
 
 \begin{document}
 
-
-\title{Out of the Loop: Structural Approximation of Optimisation Landscapes\\and non-Iterative Quantum Optimisation}
-
+%\title{Hamming Weights and QAOA Cost Landscapes}
+\title{Out of the Loop: Structural Approximation of Optimisation Landscapes and non-Iterative Quantum Optimisation}
+%\title[Out of the Loop: something something]{Hamming Weights and QAOA Cost Landscapes}
 
 \author{Tom Krüger}
-
+\orcid{0000-0002-1161-808X}
 \affiliation{%
 Technical University of Applied Sciences Regensburg,
 Regensburg, Germany}
+\affiliation{%
+FI CODE,  Universität der Bundeswehr München,
+Munich, Germany}
 \email{tom.krueger@oth-regensburg.de}
 
 \author{Wolfgang Mauerer}
-
+\orcid{0000-0002-9765-8313}
 \affiliation{%
 Technical University of Applied Sciences Regensburg, Regensburg, Germany}
 \affiliation{Siemens AG, Technology, Munich, Germany}
 \email{wolfgang.mauerer@othr.de}
 
+\maketitle
 \include{content}
 
+\bibliographystyle{plainnat}
 \bibliography{main}
+
 \end{document}

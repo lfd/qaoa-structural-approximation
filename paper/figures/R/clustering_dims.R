@@ -140,7 +140,7 @@ plot <- function() {
   return(plot)
 }
 
-main <- function() write_tex_plot(plot(), "clustering_dims.tex", width = 7, height = 4)
+main <- function() write_tex_plot(plot(), "clustering_dims.tex", width = 6.69, height = 4)
 
 if (!interactive()) {
   main()

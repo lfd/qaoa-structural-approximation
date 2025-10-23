@@ -122,7 +122,7 @@ plot <- function() {
         guides(fill = guide_colorbar(frame.colour = COLOURS.LIST[3]))
 }
 
-main <- function() write_tex_plot(plot(), "circopt_landscape.tex", width = 7, height = 2.9)
+main <- function() write_tex_plot(plot(), "circopt_landscape.tex", width = 6.69, height = 2.755)
 
 if (!interactive()) {
   main()

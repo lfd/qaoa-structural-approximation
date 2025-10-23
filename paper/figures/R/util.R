@@ -10,9 +10,11 @@ library(tikzDevice)
 
 write_tex_plot <- function(plot, filename, width, height) {
   options(tikzDocumentDeclaration = c(
-                                 "\\documentclass[aps,rpx,reprint]{revtex4-2}", 
+                                 #"\\documentclass[aps,rpx,reprint]{revtex4-2}", 
+                                 "\\documentclass[aps,rpx,reprint,amsmath,amssymb,a4paper,noarxiv]{quantumarticle}",
                                  "\\usepackage[T1]{fontenc}",
-                                 "\\usepackage[utf8]{inputenc}"
+                                 "\\usepackage[utf8]{inputenc}",
+                                 "\\usepackage{nameref}"
                                  ))
   tikz(file = filename, width = width, height = height, standAlone = TRUE)
   print(plot)

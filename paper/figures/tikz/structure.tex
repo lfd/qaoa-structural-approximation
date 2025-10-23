@@ -1,7 +1,9 @@
-\documentclass[aps,rpx,reprint,amsmath,amssymb]{revtex4-2}
+%\documentclass[aps,rpx,reprint,amsmath,amssymb]{revtex4-2}
+\documentclass[aps,rpx,reprint,amsmath,amssymb,a4paper,noarxiv]{quantumarticle}
 
 \usepackage[active,tightpage,psfixbb]{preview}
-
+\usepackage{nameref}
+\usepackage{bm}
 \renewcommand{\PreviewBbAdjust}{0pt 0pt 4pt 0pt}
 
 \usepackage{physics2}
@@ -87,16 +89,16 @@
         & \randellipse{0.75em}{1em}{120} &\\
     };
 
-    \node[matrix, ibox, anchor=north west] (instance2) at (3,0) {
-        \randellipse{1.5em}{0.75em}{120} &&
-        \randellipse{1em}{1em}{50} \\
-        & \randellipse{0.75em}{1em}{20} &\\
-    };
-
-    \node[matrix, ibox, anchor=north west] (instance3) at (6,0) {
+    \node[matrix, ibox, anchor=north west] (instance3) at (5.5,0) {
         \randellipse{1.5em}{0.75em}{20} &&
         \randellipse{1em}{1em}{120} \\
         & \randellipse{0.75em}{1em}{50} &\\
+    };
+
+    \node[matrix, ibox, anchor=north] (instance2) at ($(instance1.north)!0.5!(instance3.north)$) {
+        \randellipse{1.5em}{0.75em}{120} &&
+        \randellipse{1em}{1em}{50} \\
+        & \randellipse{0.75em}{1em}{20} &\\
     };
 
     \coordinate (bl) at ([yshift=0.5em]instance1.north west);
@@ -104,11 +106,12 @@
     \node[label, fit=(bl) (tr)] (topi) { };
     \node[anchor=center, text=white] at (topi.center) { Instance Hamming Structures };
     
-    \node[matrix, ibox, anchor=north west] (global) at (3,-3) {
+    \node[matrix, ibox, anchor=north] (global) at ($(instance2.north) + (0,-3)$) {
         \blurellipse{1.5em}{0.75em} &&
         \blurellipse{1em}{1em} \\
         & \blurellipse{0.75em}{1em} &\\
     };
+
 
     \node[anchor=south west] at (global.south west) {
       \(\bm{w_{d_1,d_2}(\pangle)}\)
@@ -126,7 +129,7 @@
     \draw[-Stealth, dataStyle] (instance1.south) |- (center) -- (global.north);
 
     \newcommand{\lscapeimg}[2]{\node[opacity=0.5] at (#1.center) { \includegraphics[width=\WIDTH]{figures/generated/landscape#2.pdf} };}
-    \node[ibox, anchor=north west] (avginf) at (3,-6) {};
+    \node[ibox, anchor=north] (avginf) at ($(global.north) + (0,-3)$) {};
     \lscapeimg{avginf}{4}
     \sublabel{avginf}{\textcolor{lfd2}{\tilde{E}(F_{1}(\mangle, \pangle)}}
     
@@ -139,26 +142,27 @@
     \binimg{landscape1}{1}
     \node[anchor=south west] at (landscape1.south west) {\(\bm{c^{(3)}(\vec{z})}\)};
 
-    \node[ibox, anchor=north west] (landscape2) at ($(-6,0) - (1em,0)$) { };
-    \binimg{landscape2}{2}
-    \node[anchor=south west] at (landscape2.south west) {\(\bm{c^{(2)}(\vec{z})}\)};
 
-    \node[ibox, anchor=north west] (landscape3) at ($(-9,0) - (1em,0)$) { };    
+    \node[ibox, anchor=north west] (landscape3) at ($(-8.5,0) - (1em,0)$) { };    
     \binimg{landscape3}{3}
     \node[anchor=south west] at (landscape3.south west) {\(\bm{c^{(1)}(\vec{z})}\)};
+
+    \node[ibox, anchor=north] (landscape2) at ($(landscape3.north)!0.5!(landscape1.north)$) { };
+    \binimg{landscape2}{2}
+    \node[anchor=south west] at (landscape2.south west) {\(\bm{c^{(2)}(\vec{z})}\)};
 
     %%%%%%%%%%%% QAOA Optimisation Landscapes %%%%%%%%%%%%%%%%%%
     \node[ibox, anchor=north west] (qaoa1) at ($(-3,-3) - (1em,0)$) { };
     \lscapeimg{qaoa1}{1}
     \flabel{1}{3}
 
-    \node[ibox, anchor=north west] (qaoa2) at ($(-6,-3) - (1em,0)$) { };
-    \lscapeimg{qaoa2}{2}
-    \flabel{2}{2}
-
-    \node[ibox, anchor=north west] (qaoa3) at ($(-9,-3) - (1em,0)$) { };    
+    \node[ibox, anchor=north west] (qaoa3) at ($(-8.5,-3) - (1em,0)$) { };    
     \lscapeimg{qaoa3}{3}
     \flabel{3}{1}
+
+    \node[ibox, anchor=north] (qaoa2) at ($(qaoa1.north)!0.5!(qaoa3.north)$) { };
+    \lscapeimg{qaoa2}{2}
+    \flabel{2}{2}
 
     \foreach\i in{1,2,3} { \draw[-Stealth] (landscape\i.south) -- (qaoa\i.north); }
 
@@ -167,7 +171,10 @@
     \node[label, fit=(bl) (tr)] (topl) { };
     \node[anchor=center, text=white] at (topl.center) { Instance Landscapes };  
 
-    \node[ibox, anchor=north west] (avglscape) at ($(-6,-6) - (1em,0)$) { };
+    % draw reference line for \textwidth
+    %\draw[red,dashed] (landscape3.west) -- +(\textwidth,0);
+
+    \node[ibox, anchor=north] (avglscape) at ($(qaoa2.north) + (0,-3)$) { };
     \lscapeimg{avglscape}{4}
     \sublabel{avglscape}{\textcolor{lfd4}{E(F_{1}(\mangle, \pangle)}}
 

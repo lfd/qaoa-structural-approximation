@@ -205,7 +205,7 @@ plot <- function() {
             )
 }
 
-main <- function() write_tex_plot(plot(), "uniform_analytic.tex", width = 7, height = 5)
+main <- function() write_tex_plot(plot(), "uniform_analytic.tex", width = 6.69, height = 4.75)
 
 if (!interactive()) {
   main()

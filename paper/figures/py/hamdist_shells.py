@@ -98,6 +98,9 @@ def hamdist_plot(ax, G, sls, t, highlight_level: None):
     return ax
 
 def hamdist_tikz_node(G, sls, t, highlight_level= None, draw_edges=True, max_d=None, draw_bounding_box=True, clip=True):
+    circle_size = 0.3
+    shell_radius_scale = 0.825
+
     max_dist = int(max([-w for _,_,w in G.edges.data('weight')]))
 
     nodes = G.nodes()
@@ -109,31 +112,31 @@ def hamdist_tikz_node(G, sls, t, highlight_level= None, draw_edges=True, max_d=N
      
     ls = sls[t]
 
-    top = max(map(lambda c: ls[c][1], nodes)) 
-    bot = min(map(lambda c: ls[c][1], nodes)) 
+    top = shell_radius_scale * max(map(lambda c: ls[c][1], nodes)) 
+    bot = shell_radius_scale * min(map(lambda c: ls[c][1], nodes)) 
 
-    lef = min(map(lambda c: ls[c][0], nodes)) 
-    rig = max(map(lambda c: ls[c][0], nodes)) 
+    lef = shell_radius_scale * min(map(lambda c: ls[c][0], nodes)) 
+    rig = shell_radius_scale * max(map(lambda c: ls[c][0], nodes)) 
 
     active_ds = list(set(map(lambda n: -1 * G[n][t]['weight'], G.neighbors(t))))
 
     tikz_vertex_coord_definition = "\n".join(map(
-        lambda v: f"\coordinate (t{v}) at ({ls[v][0]},{ls[v][1]});", 
+        lambda v: f"\coordinate (t{v}) at ({shell_radius_scale * ls[v][0]},{shell_radius_scale * ls[v][1]});", 
         nodes
     ))
 
     tikz_vertex_dots = "\n".join(map(
-        lambda v: f"\draw[fill=lfd2,color=lfd2] (t{v}) circle (0.4);", 
+        lambda v: f"\draw[fill=lfd2,color=lfd2] (t{v}) circle ({circle_size});", 
         highlight_nodes
     ))
 
     tikz_vertex_dots_highlighted = "\n".join(map(
-        lambda v: f"\draw[fill=black,color=black] (t{v}) circle (0.4);", 
+        lambda v: f"\draw[fill=black,color=black] (t{v}) circle ({circle_size});", 
         non_highlight_nodes
     ))
 
     tikz_d_circles = "\n".join(map(
-        lambda d: f"\draw[line width={2 if d in active_ds else 0.75},color={'lfd2' if d == highlight_level else 'black'}] (0,0) circle ({d});", 
+        lambda d: f"\draw[line width={1.25 if d in active_ds else 0.5},color={'lfd2' if d == highlight_level else 'black'}] (0,0) circle ({shell_radius_scale * d});", 
         range(1, (max_dist if max_d == None else min(max_dist, max_d)) + 1)
     ))
 
@@ -277,16 +280,18 @@ def hamdist_tikz(n, G, sls, ts, nrows, ncols, highlight_level= None):
 
     tikz_formula = f"""
     \\begin{{align*}}
-    \\overline{{\\#_{{d=2}}}} &= {tikz_num_d_formal_set} \\\\ 
+    \\overline{{\\#_{{d=2}}}} &= {tikz_num_d_formal_set} \\\\[1em]
     &= \\overline{{
       {tikz_set_graphics.strip()}
-    }} \\\\
+    }} \\\\[1em]
     &= {tikz_mean_num_d} = {np.mean([num_d(highlight_level, t) for t in ts[:nrows*ncols]])}
     \\end{{align*}}
     """.strip()
 
     tikz_str_top = f"""
     \\colorbox{{lfd3}}{{\\parbox{{\\textwidth}}{{\\textcolor{{white}}{{Hamming Distance Structure}}}}}}
+
+    \\vspace*{{1em}}
     {tikz_graphs}
     """
 

@@ -9,6 +9,7 @@ else
 
     ln -s ${rp}/out/uniform figures/links/
     ln -s ${rp}/out/clustered figures/links/
+    ln -s ${rp}/out/clustered_scaled figures/links/
     ln -s ${rp}/out/sat figures/links/
     ln -s ${rp}/out/qrfactoring_approx figures/links/
     ln -s ${rp}/out/uniform_preopt figures/links/

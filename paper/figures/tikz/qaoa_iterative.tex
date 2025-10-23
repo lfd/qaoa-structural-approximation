@@ -1,5 +1,7 @@
-\documentclass[aps,rpx,reprint,amsmath,amssymb]{revtex4-2}
+%\documentclass[aps,rpx,reprint,amsmath,amssymb]{revtex4-2}
+\documentclass[aps,rpx,reprint,amsmath,amssymb,a4paper,noarxiv,twocolumn]{quantumarticle}
 
+\usepackage{nameref}
 \usepackage[active,tightpage,psfixbb]{preview}
 
 \renewcommand{\PreviewBbAdjust}{0pt -4pt 0pt 0pt 0pt}
@@ -48,11 +50,12 @@
 \tikzset{label/.style={fill=black!50, inner sep=0pt, text=white}}
 \newcommand{\onbg}[1]{\begin{pgfonlayer}{background}%
                       #1\end{pgfonlayer}}
-\def\dist{1.75em}                      
+\def\dist{1em}                      
 \newcommand{\iterationnf}{\(\textcolor{lfd4}{\circlearrowright}\)}
 \newcommand{\iteration}{\fatten[0.7pt]{\iterationnf}}
 
 \begin{document}
+\twocolumn
 \begin{preview}
 \begin{tikzpicture}
 \pgfdeclarelayer{background}\pgfsetlayers{background,main}
@@ -71,8 +74,8 @@
   [style={draw=black,align=center},name=pp] box { \rotatebox{90}{Sample}} (q, sep, p);
   discard q; discard sep; discard p;
 \end{yquant}
-    \coordinate (bl) at ([yshift=\dist]mixer.north west);
-    \coordinate (br) at ([yshift=\dist]problem.north east);
+    \coordinate (bl) at ([yshift=1.5\dist]mixer.north west);
+    \coordinate (br) at ([yshift=1.5\dist]problem.north east);
     
     \newcommand{\optnode}{\node[draw=none,anchor=south] (optimisation) at ($(bl)!0.5!(br)$) { Optimisation };}
     \optnode
@@ -102,12 +105,14 @@
     \node[box, anchor=north] (instance) at ([yshift=-\dist]problem.south) { Instance};
     \draw[dataStyle, -Stealth] (instance.north) -- (problem.south);
 
+    %\draw[red, dashed] ([xshift=-0.5em]instance_opt.west) -- ++(0.5\textwidth - 0.5\columnsep, 0);
+
     \begin{pgfonlayer}{background}
-        \node[fill=gray!25, draw=none, rounded corners, fit=(instance_opt.north west) (pp.south east) (meas4.south) (flow_tr)] (outline) {};
+        \node[fill=gray!25, draw=none, rounded corners, inner sep=0.5em, fit=(instance_opt.north west) (pp.south east) (meas4.south) (flow_tr)] (outline) {};
     \end{pgfonlayer}
 
     \coordinate (center) at ($(outline.west |- optimisation.north)!0.5!(outline.east |- optimisation.north)$);
-    \node at ([yshift=\dist]center) {\emph{Standard QAOA}};
+    \node at ([yshift=1.25\dist]center) {\emph{Standard QAOA}};
 \end{tikzpicture}
 \end{preview}
 

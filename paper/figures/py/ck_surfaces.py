@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
 from binhamming import binhamming
 import scipy as sc
 import functools as ft
@@ -10,7 +11,6 @@ lfd_colors = ["black", "#E69F00", "#999999", "#009371", "#beaed4", "#ed665a", "#
 
 def f(t, n, d):
     return np.cos(t)**(n - d) * (-1j * np.sin(t))**d
-
 
 def ck(theta, phi, n, k, target):
     ds = [binhamming(z, k) for z in target]
@@ -23,6 +23,9 @@ def ck(theta, phi, n, k, target):
 
 
 def plot():
+
+    #plt.style.use("Solarize_Light2")
+
     df_k10 = pd.read_csv("ck_k10.csv")
     df_k13 = pd.read_csv("ck_k13.csv")
     df_k14 = pd.read_csv("ck_k14.csv")
@@ -31,7 +34,8 @@ def plot():
     phi = np.array(df_k10["phi"]).reshape((25, 100))
 
     X, Z = np.meshgrid(np.linspace(0, np.pi, 100),
-                       np.linspace(0, 3, 100))
+                         np.linspace(0, 3, 100))
+    Y = np.repeat(1.2, 100)
 
     z_k10 = np.array(df_k10["z"]).reshape((25, 100))
     z_k13 = np.array(df_k13["z"]).reshape((25, 100))
@@ -40,6 +44,10 @@ def plot():
     fig, ax = plt.subplots(1, 3, subplot_kw={"projection": "3d"})
 
     fig.set_size_inches((7, 3.5))
+
+    #ax[0].plot_wireframe(theta, phi, z_k10, rstride=4, cstride=0, color=lfd_colors[0])
+    #ax[1].plot_wireframe(theta, phi, z_k13, rstride=4, cstride=0, color=lfd_colors[1])
+    #ax[2].plot_wireframe(theta, phi, z_k14, rstride=4, cstride=0, color=lfd_colors[2])
 
     ts = np.linspace(-np.pi / 2, np.pi / 2, 100)
     ps = 1.2
@@ -55,18 +63,23 @@ def plot():
     ax[2].plot_surface(theta, phi, z_k14, alpha=0.3, color=lfd_colors[4], edgecolor=lfd_colors[4], rstride=2, cstride=2)
     ax[2].plot(ts, np.abs(ck(ts, ps, n, 14, T))**2, linewidth=2, linestyle="dashed", color="black", zs=ps, zdir="y")
    
-    ax[0].set_xlabel("$\\beta$", labelpad=-3)
-    ax[0].tick_params(pad=-3)
+
+    ax[0].set_xlabel("$\\beta$", labelpad = -3)
+    #ax[0].set_ylabel("$\\gamma$", labelpad = -3)
+    #ax[0].set_zlabel("$|c_k|^2$", labelpad = -3)
+    ax[0].tick_params(pad = -3)
     ax[0].view_init(elev=12, azim=-80, roll=0)
 
-    ax[1].set_xlabel("$\\beta$", labelpad=-3)
-    ax[1].tick_params(pad=-3)
+    ax[1].set_xlabel("$\\beta$", labelpad = -3)
+    #ax[1].set_ylabel("$\\gamma$", labelpad = -3)
+    #ax[1].set_zlabel("$|c_k|^2$", labelpad = -3)
+    ax[1].tick_params(pad = -3)
     ax[1].view_init(elev=12, azim=-80, roll=0)
 
-    ax[2].set_xlabel("$\\beta$", labelpad=-3)
-    ax[2].set_ylabel("$\\gamma$", labelpad=-3)
-    ax[2].set_zlabel("$|c_k|^2$", labelpad=-3)
-    ax[2].tick_params(pad=-3)
+    ax[2].set_xlabel("$\\beta$", labelpad = -3)
+    ax[2].set_ylabel("$\\gamma$", labelpad = -3)
+    ax[2].set_zlabel("$|c_k|^2$", labelpad = -3)
+    ax[2].tick_params(pad = -3)
     ax[2].view_init(elev=12, azim=-80, roll=0)
 
     return fig

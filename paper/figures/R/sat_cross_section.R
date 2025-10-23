@@ -111,7 +111,7 @@ main <- function() {
   dev.off()
 }
 
-main <- function() write_tex_plot(plot(), "sat_cross_section.tex", width = 3.4, height = 3)
+main <- function() write_tex_plot(plot(), "sat_cross_section.tex", width = 3.2, height = 2.85)
 
 if (!interactive()) {
   main()

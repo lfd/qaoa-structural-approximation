@@ -90,7 +90,7 @@ plot <- function() {
   return(plot)
 }
 
-main <- function() write_tex_plot(plot(), "ck_components.tex", width = 3.4, height = 2.5)
+main <- function() write_tex_plot(plot(), "ck_components.tex", width = 3.2, height = 2.5)
 
 if (!interactive()) {
   main()

@@ -31,6 +31,15 @@ plot <- function() {
         map(\(df) df |> select(n, mangle, pangle, issolution, seed, opt, problem)) |>
         bind_rows()
 
+  #df |>
+  #group_by(seed, opt, problem) |>
+  #summarize(hitrate = mean(issolution)) |>
+  #ggplot(aes(y = opt, x = hitrate)) +
+  #geom_boxplot() +
+  #facet_wrap(~problem, scales = "free", ncol=1, strip.position = "right") +
+  #theme_light()
+
+
   problem_labels <- c("uniform" = "Uniform"
                      ,"sat" = "SAT"
                      ,"qrf" = "$qr$-FACTORING"
@@ -74,7 +83,9 @@ plot <- function() {
            theme(legend.position = "none"
                 ,axis.title.y = element_blank() 
                 ,plot.title = element_text(size = 11)
-                )           
+                )# +
+           #ggtitle("$qr$-FACTORING")
+           
 
   layout <- "
   AA
@@ -100,7 +111,7 @@ main <- function() {
                                  "\\usepackage{physics2}",
                                  "\\usephysicsmodule{ab, ab.braket, diagmat, ab.legacy}"
                                  ))
-  tikz(file = "circopt_vs_preopt.tex", width = 3.4, height = 3, standAlone = TRUE)
+  tikz(file = "circopt_vs_preopt.tex", width = 3.2, height = 2.85, standAlone = TRUE)
   print(p)
 
   dev.off()
